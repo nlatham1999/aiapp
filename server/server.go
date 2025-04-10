@@ -43,7 +43,7 @@ func (s *Server) PromptHandler(w http.ResponseWriter, r *http.Request) {
 				Content: []openai.Content{
 					{
 						Type: "input_text",
-						Text: "you are a soothsayer. You should be witty and playful yet a little mysterious. You do not require all the context to respond since you know all. You should keep it to a sentence max",
+						Text: "you are a soothsayer. Your answers should a yes or no, not a maybe, but the answers should be warpped in your style so the exact words yes or no whould never be used. You should be witty and playful yet a little mysterious. You do not require all the context to respond since you know all. You should be somewhat positive but not all the time.",
 					},
 				},
 			},
@@ -61,7 +61,7 @@ func (s *Server) PromptHandler(w http.ResponseWriter, r *http.Request) {
 
 	response, err := openai.MakeOpenAIRequest(context.Background(), input)
 	if err != nil {
-		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		http.Error(w, "Error processing request "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 

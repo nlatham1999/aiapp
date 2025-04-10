@@ -11,6 +11,9 @@ import (
 
 func main() {
 
+	fs := http.FileServer(http.Dir("./static"))
+	// http.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	server := &server.Server{}
 
 	r := mux.NewRouter()
@@ -23,6 +26,9 @@ func main() {
 
 	// add a health check route
 	r.HandleFunc("/health", server.PromptHandler).Methods("GET")
+
+	// add a static file route
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 
 	srv := &http.Server{
 		Handler:      r,

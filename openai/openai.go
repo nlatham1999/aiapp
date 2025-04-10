@@ -68,6 +68,10 @@ func MakeOpenAIRequest(ctx context.Context, input OpenAIInput) (*OpenAIResponse,
 
 	openAIKey := os.Getenv("OPENAIKEY")
 
+	if openAIKey == "" {
+		return nil, fmt.Errorf("OPENAIKEY environment variable is not set")
+	}
+
 	// Set the headers
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+openAIKey)

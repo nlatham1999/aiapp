@@ -1,9 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta property="og:title" content="soothsayer" />
+    <meta property="og:description" content="Ask the future." />
+    <meta property="og:image" content="https://soothsayer.ai/static/image.png" />
+    <meta property="og:url" content="https://soothsayer.ai/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="soothsayer" />
+    <meta name="twitter:description" content="Ask the future." />
+    <meta name="twitter:image" content="https://soothsayer.ai/static/image.png" />
+<meta property="og:type" content="website" />
   <title>prompt demo</title>
   <style>
+
+    .font-regular {
+        font-family: "Manrope", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 300;
+        font-style: normal;
+    }
+
     body {
       margin: 0;
       height: 100vh;
@@ -13,7 +33,6 @@
       align-items: center;
       justify-content: flex-start;
       color: white;
-      font-family: sans-serif;
     }
 
     #promptInput {
@@ -22,7 +41,7 @@
       padding: 1em;
       border: none;
       resize: none;
-      font-size: x-large;
+      font-size: 1.7em;
       border-radius: 4px;
       text-align: center;
       background-color: transparent;
@@ -40,23 +59,9 @@
       overflow-y: auto;
       box-sizing: border-box;
       padding: 1em;
-      font-size: x-large;
+      font-size: 1.7em;
       text-align: center;
     }
-    #output::after {
-        content: "";
-        display: inline-block;
-        width: 0.5em;
-        height: 1em;
-        background: white;
-        margin-left: 0.2em;
-        animation: blink 1s step-start infinite;
-        vertical-align: bottom;
-        }
-
-        @keyframes blink {
-        50% { opacity: 0; }
-        }
 
     button {
       position: absolute;
@@ -64,7 +69,7 @@
       transform: translateY(-50%);
       z-index: 1;
       padding: 0.75em 1.5em;
-      font-size: x-large;
+      font-size: 1.7em;
       cursor: pointer;
       background-color: #3c6e5a;
       border: none;
@@ -105,9 +110,9 @@
     }
   </style>
 </head>
-<body>
-  <input type="text" id="promptInput" placeholder="go on... ask the future...">
-  <button onclick="sendPrompt()">submit</button>
+<body class="font-regular">
+  <input class="font-regular" type="text" id="promptInput" placeholder="go on... ask the future...">
+  <button class="font-regular" onclick="sendPrompt()">submit</button>
   <div id="output"></div>
 
     
@@ -122,25 +127,46 @@
       }
     });
 
+    let isSending = false;
+
     async function sendPrompt() {
-      const input = document.getElementById("promptInput").value;
-      const res = await fetch("/prompt", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ prompt: input })
-      });
-      const data = await res.json();
 
-      // loop through each character in the response and slowly display it
-        let output = "";
-        for (let i = 0; i < data.response.length; i++) {
-          output += data.response[i];
-          document.getElementById("output").innerText = output;
-          await new Promise(resolve => setTimeout(resolve, 50));
+
+        if (isSending) return;
+        isSending = true;
+
+        const button = document.querySelector("button");
+        button.disabled = true;
+        const originalText = button.innerText;
+        button.innerText = "waiting...";
+
+        document.getElementById("output").innerText = "";
+
+        try {
+            const input = document.getElementById("promptInput").value;
+            const res = await fetch("/prompt", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ prompt: input })
+            });
+            const data = await res.json();
+
+            button.disabled = false;
+            button.innerText = originalText;
+
+            let output = "";
+            for (let i = 0; i < data.response.length; i++) {
+                output += data.response[i];
+                document.getElementById("output").innerText = output;
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+        } finally {
+            isSending = false;
+            button.disabled = false;
+            button.innerText = originalText;
         }
-
     }
   </script>
 </body>
