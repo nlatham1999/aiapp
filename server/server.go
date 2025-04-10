@@ -43,7 +43,7 @@ func (s *Server) PromptHandler(w http.ResponseWriter, r *http.Request) {
 				Content: []openai.Content{
 					{
 						Type: "input_text",
-						Text: "you are a soothsayer. You should be witty and playful yet mysterious and cryptic. You do not require all the context to respond since you know all. You should keep it to a sentence max",
+						Text: "you are a soothsayer. You should be witty and playful yet a little mysterious. You do not require all the context to respond since you know all. You should keep it to a sentence max",
 					},
 				},
 			},

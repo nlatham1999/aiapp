@@ -22,7 +22,7 @@
       padding: 1em;
       border: none;
       resize: none;
-      font-size: medium;
+      font-size: x-large;
       border-radius: 4px;
       text-align: center;
       background-color: transparent;
@@ -40,8 +40,23 @@
       overflow-y: auto;
       box-sizing: border-box;
       padding: 1em;
-      font-size: medium;
+      font-size: x-large;
+      text-align: center;
     }
+    #output::after {
+        content: "";
+        display: inline-block;
+        width: 0.5em;
+        height: 1em;
+        background: white;
+        margin-left: 0.2em;
+        animation: blink 1s step-start infinite;
+        vertical-align: bottom;
+        }
+
+        @keyframes blink {
+        50% { opacity: 0; }
+        }
 
     button {
       position: absolute;
@@ -49,7 +64,7 @@
       transform: translateY(-50%);
       z-index: 1;
       padding: 0.75em 1.5em;
-      font-size: medium;
+      font-size: x-large;
       cursor: pointer;
       background-color: #3c6e5a;
       border: none;
@@ -78,20 +93,20 @@
 
     @media (orientation: portrait) {
       #output {
-        left: 10%;
-        width: 80%;
+        left: 20%;
+        width: 60%;
       }
       #promptInput {
-        left: 10%;
-        width: 80%;
-        top: calc(50vh - 8em);
+        left: 20%;
+        width: 60%;
+        top: calc(50vh - 10em);
         height: 10vh;
       }
     }
   </style>
 </head>
 <body>
-  <input type="text" id="promptInput" placeholder="ask away...">
+  <input type="text" id="promptInput" placeholder="go on... ask the future...">
   <button onclick="sendPrompt()">submit</button>
   <div id="output"></div>
 
