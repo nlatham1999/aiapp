@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>prompt demo</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(to bottom, #1a3c2c, #2f2f2f);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      color: white;
+      font-family: sans-serif;
+    }
+
+    #promptInput {
+      position: absolute;
+      box-sizing: border-box;
+      padding: 1em;
+      border: none;
+      resize: none;
+      font-size: medium;
+      border-radius: 4px;
+      text-align: center;
+      background-color: transparent;
+        color: white;
+
+    }
+    #promptInput:focus {
+      outline: none;
+    }
+
+    #output {
+      position: absolute;
+      top: calc(50vh + 4em);
+      bottom: 0;
+      overflow-y: auto;
+      box-sizing: border-box;
+      padding: 1em;
+      font-size: medium;
+    }
+
+    button {
+      position: absolute;
+      top: 50vh;
+      transform: translateY(-50%);
+      z-index: 1;
+      padding: 0.75em 1.5em;
+      font-size: medium;
+      cursor: pointer;
+      background-color: #3c6e5a;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #4f8a70;
+    }
+
+    @media (orientation: landscape) {
+      #output {
+        left: 33%;
+        width: 34%;
+      }
+      #promptInput {
+        left: 33%;
+        width: 34%;
+        top: calc(50vh - 8em);
+        height: 10vh;
+      }
+    }
+
+    @media (orientation: portrait) {
+      #output {
+        left: 10%;
+        width: 80%;
+      }
+      #promptInput {
+        left: 10%;
+        width: 80%;
+        top: calc(50vh - 8em);
+        height: 10vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <input type="text" id="promptInput" placeholder="ask away...">
+  <button onclick="sendPrompt()">submit</button>
+  <div id="output"></div>
+
+    
+
+  <script>
+
+    // add on enter event to input
+    document.getElementById("promptInput").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sendPrompt();
+      }
+    });
+
+    async function sendPrompt() {
+      const input = document.getElementById("promptInput").value;
+      const res = await fetch("/prompt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ prompt: input })
+      });
+      const data = await res.json();
+
+      // loop through each character in the response and slowly display it
+        let output = "";
+        for (let i = 0; i < data.response.length; i++) {
+          output += data.response[i];
+          document.getElementById("output").innerText = output;
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+
+    }
+  </script>
+</body>
+</html>
